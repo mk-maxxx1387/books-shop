@@ -17,10 +17,10 @@ class Router
 
 		$req = explode('/', $_SERVER['REQUEST_URI']);
 		
-		$start = array_search('git-hlam-and-etc', $req);
+		$start = array_search('api', $req);
 		//request counter
 		$cntr = $start+1;
-		if (!empty($req[$cntr]))
+		/*if (!empty($req[$cntr]))
 		{
 			if($req[$cntr] == 'api'){
 				//include '/api/Controller_Api.php';
@@ -46,9 +46,7 @@ class Router
 					}
 				}
 			}
-
-			
-		}
+		}*/
 
 		$class = new $class_name;
 		$funct = $obj_name.'_'.$action_name;

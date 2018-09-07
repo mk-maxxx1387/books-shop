@@ -1,26 +1,22 @@
 <?php
 
+include_once "../libs/DB.php";
+
 class Model_Author{
 
 	private $db;
 
 	public function __construct()
 	{
-		$this->db = new PDO(
-			'mysql:host='.DB_HOST.';dbname='.DB_NAME,
-	    	DB_USER,
-	    	DB_PASS
-	    );
+		$this->db = new DB();
 	}
 
 	public function getAllAuth()
 	{
 		$authors = array();
-		$sql = "SELECT `id`,`name` FROM `authors`";
+		$query = "SELECT `id`,`name` FROM `authors`";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$result = $this->db->query($query);
 
         if ($result)
         {
@@ -36,11 +32,9 @@ class Model_Author{
 
 	public function getAuthById($id)
 	{
-		$sql = "SELECT `id`,`name` FROM `authors` WHERE `id` = ?";
+		$query = "SELECT `id`,`name` FROM `authors` WHERE `id` = ?";
 
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($id));
-        $result = $stmt->fetch();
+		$result = $this->db->queryFetch($query, array($id));
 
         if ($result)
         {
@@ -50,14 +44,12 @@ class Model_Author{
 
 	public function getAuthByBookId($book_id)
 	{
-		$sql = "SELECT `authors`.`id`,`authors`.`name` 
+		$query = "SELECT `authors`.`id`,`authors`.`name` 
 				FROM `authors`,`books_authors` 
 				WHERE `authors`.`id` = `books_authors`.`auth_id`
 				AND `books_authors`.`book_id` = ?";
 
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($book_id));
-        $result = $stmt->fetchAll();
+		$result = $this->db->queryFetchAll($query, array($book_id));
         $authors = array();
 
         if ($result)
@@ -71,26 +63,26 @@ class Model_Author{
 
 	public function addAuthor(Author $author)
 	{
-        $sql = "INSERT INTO `authors` (`id`,`name`)
-                VALUES (?,?)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(array('', $author->name));
+        $query = "INSERT INTO `authors` (`name`)
+				VALUES (?)";
+				
+        $this->db->queryFetch($query, array($author->name));
 	}
 
 	public function editAuthor(Author $author)
 	{
-		$sql = "UPDATE `authors` 
+		$query = "UPDATE `authors` 
 				SET `name` = ?
 				WHERE `id` = ?";
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($author->name, $author->id));
+
+		$this->db->queryFetch(array($author->name, $author->id));
 	}
 
 	public function deleteAuthor($auth_id)
 	{
-		$sql = "DELETE FROM `authors` 
+		$query = "DELETE FROM `authors` 
 				WHERE `id` = ?";
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($auth_id));
+
+		$this->db->queryFetch($query, array($author->name, $author->id));		
 	}
 }

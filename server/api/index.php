@@ -1,7 +1,7 @@
 <?php
 ///////////////MAIN INIT////////////////////
 header("Content-Type: text/html; charset=utf-8");
-include_once('./config.php');
+include_once('config/config.php');
 
 spl_autoload_register(function ($name){
 	include 'libs/'.$name.'.php';

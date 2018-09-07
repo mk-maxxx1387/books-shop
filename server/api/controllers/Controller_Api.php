@@ -68,7 +68,7 @@ class Controller_Api extends Controller
 	    echo json_encode($book);
 	}
 
-		public function book_new()
+	public function book_new()
 	{
 
 		$auth_list = $this->m_auth->getAllAuth();
@@ -168,8 +168,7 @@ class Controller_Api extends Controller
 		$authors = $this->m_auth->getAllAuth();
 		echo json_encode($authors);
 	}
-	//////////////////////////////////////////////
-	///////////////GENRE CONTROLLER///////////////
+
 	public function genre_add(){
 		$genre = new Genre(null, $_REQUEST['genre_name']);
 		$this->m_genre->addGenre($genre);
@@ -204,10 +203,4 @@ class Controller_Api extends Controller
 		$content = '/admin/templates/genre_list.tpl.php';
 		include '/admin/main.php';
 	}
-	///////////////////////////////////////////////
-
-
-
-	////////DELETE///////
-
 }

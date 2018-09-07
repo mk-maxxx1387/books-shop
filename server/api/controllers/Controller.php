@@ -16,9 +16,9 @@ class Controller
 		$this->m_genre = new Model_Genre();
 	}
 
-	public function book_all()
+	/*public function book_all()
 	{
-		/*
+		
 		$filter_auth = intval($_POST['filter_auth']);
 		$filter_genre = intval($_POST['filter_genre']);
 
@@ -32,7 +32,7 @@ class Controller
 			$genres = $this->m_genre->getGenreByBookId($b['id']);
 			$book = new Book($b['id'], $b['name'], $b['descr'], $b['price'], $authors, $genres);
 			$books[] = $book;
-		}*/
+		}
 
 		$title = 'Books';
 		$content = 'templates/books_list.tpl.php';
@@ -83,4 +83,5 @@ class Controller
 
 		return $book;
 	}
+	*/
 }
