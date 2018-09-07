@@ -1,0 +1,4 @@
+Authname "Basic Auth"
+Authtype Basic
+require valid-user
+AuthUserFile "D:/OpenServer/domains/books-catalog/admin/.htpasswd"
