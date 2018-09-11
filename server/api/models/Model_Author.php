@@ -1,6 +1,6 @@
 <?php
 
-include_once "../libs/DB.php";
+//include_once "../libs/DB.php";
 
 class Model_Author{
 

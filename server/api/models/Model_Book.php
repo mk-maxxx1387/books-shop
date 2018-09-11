@@ -1,6 +1,6 @@
 <?php
 
-include_once "../libs/DB.php";
+//include_once "../libs/DB.php";
 
 class Model_Book{
 
@@ -13,12 +13,17 @@ class Model_Book{
 
 	private function addBookRelations($book_id, $authors, $genres)
 	{
-		for ($i=0; $i < count($authors); $i++) { 
-			$sql = "INSERT INTO `books_authors` (`id`, `book_id`, `auth_id`)
-				VALUES (?,?,?)";
-			$stmt = $this->db->prepare($sql);
-        	$stmt->execute(array('', $book_id, $authors[$i]));
-		}
+		
+			$data = array(); 
+			$sql = "INSERT INTO `books_authors` (`book_id`, `auth_id`)";
+			for ($i=0; $i < count($authors); $i++) {
+				$sql.="VALUES (?,?)";
+				$data.push($book_id)
+			}
+				
+			/*$stmt = $this->db->prepare($sql);
+			$stmt->execute(array('', $book_id, $authors[$i]));*/
+
 		for ($i=0; $i < count($genres); $i++) { 
 			$sql = "INSERT INTO `books_genres` (`id`, `book_id`, `genre_id`)
 				VALUES (?,?,?)";

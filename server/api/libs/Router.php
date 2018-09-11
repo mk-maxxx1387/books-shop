@@ -8,7 +8,8 @@ class Router
 
 	static function start()
 	{
-		
+	
+		var_dump('test');
 		$class_name = 'Controller';
 		$obj_name = 'book';
 		$action_name = 'all';
@@ -18,6 +19,7 @@ class Router
 		$req = explode('/', $_SERVER['REQUEST_URI']);
 		
 		$start = array_search('api', $req);
+		
 		//request counter
 		$cntr = $start+1;
 		/*if (!empty($req[$cntr]))
@@ -50,7 +52,7 @@ class Router
 
 		$class = new $class_name;
 		$funct = $obj_name.'_'.$action_name;
-		//var_dump($funct);
+		var_dump($funct);
 
 		if(method_exists($class, $funct))
 		{
