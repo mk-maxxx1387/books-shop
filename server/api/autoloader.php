@@ -6,7 +6,8 @@ function __autoload($class_name)
         $directorys = array(
             'controllers/',
             'libs/',
-            'models/'
+            'models/',
+            'services/'
         );
         
         //for each directory

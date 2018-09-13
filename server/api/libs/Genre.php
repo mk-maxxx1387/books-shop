@@ -6,8 +6,8 @@
 class Genre implements JsonSerializable
 {
 	
-	private $id;
-	private $name;
+	public $id;
+	public $name;
 
 	public function __construct($id, $name)
 	{

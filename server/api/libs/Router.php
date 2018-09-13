@@ -8,68 +8,35 @@ class Router
 
 	static function start()
 	{
-	
-		var_dump('test');
-		$class_name = 'Controller';
-		$obj_name = 'book';
-		$action_name = 'all';
-		$param = ''; 
-
-
 		$req = explode('/', $_SERVER['REQUEST_URI']);
-		
+		$method = $_SERVER['REQUEST_METHOD'];
+
 		$start = array_search('api', $req);
 		
-		//request counter
-		$cntr = $start+1;
-		/*if (!empty($req[$cntr]))
-		{
-			if($req[$cntr] == 'api'){
-				//include '/api/Controller_Api.php';
-				$class_name = 'Controller_Api';
-				$cntr++;
-			} elseif ($req[$cntr] == 'admin-mode') {				
-				$class_name = 'Controller_Admin';
-				//var_dump('admin');
-				$cntr++;
-			}
-			if (!empty($req[$cntr]))
-			{
-				$obj_name = $req[$cntr];
-				$cntr++;
-				if (!empty($req[$cntr]))
-				{
-					$action_name = $req[$cntr];
-					$cntr++;
+		$class = $req[$start+1];
+		$param = $req[$start+2];
+		$func = strtolower($method).ucfirst($class);
+		$controller = "Controller_".ucfirst($class);
+		$params = explode('.', $param);
 
-					if (!empty($req[$cntr]))
-					{
-						$param = $req[$cntr];
-					}
-				}
-			}
-		}*/
-
-		$class = new $class_name;
-		$funct = $obj_name.'_'.$action_name;
-		var_dump($funct);
-
-		if(method_exists($class, $funct))
-		{
-			if (!empty($param)) {
-				$class->$funct($param);
-			} else {
-				$class->$funct();
-			}
-		}
-		else
-		{
-			//Router::ErrorPage404();
-		}
-		
+		self::setMethod($controller, $func, $params[0], $params[1]);
 	}
 
-	function ErrorPage404()
+	protected static function setMethod($controller, $func, $param, $printType){
+		$obj = null;
+		if(class_exists($controller)){
+			$obj = new $controller();	
+		} 
+		if(method_exists($obj, $func)){
+			$res = $obj->$func($param);
+			new View($res['code'], $res['data'], $printType);
+		} else {
+			new View(404, "Page not found");
+			//self::ErrorPage404();
+		}
+	}
+
+	static function ErrorPage404()
 	{
         $host = 'http://'.$_SERVER['HTTP_HOST'].'/';
         header('HTTP/1.1 404 Not Found');

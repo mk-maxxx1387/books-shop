@@ -81,9 +81,9 @@ class Controller_Api extends Controller
 	/////////////////////
 	public function book_add()
 	{
-		$book_id = $this->m_book->getNextBookId();
+		//$book_id = $this->m_book->getNextBookId();
 		$book = new Book(
-			$book_id,
+			null,
 			$_POST['book_title'],
 			$_POST['book_descr'],
 			$_POST['book_price'],

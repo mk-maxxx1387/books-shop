@@ -75,7 +75,7 @@ class Model_Author{
 				SET `name` = ?
 				WHERE `id` = ?";
 
-		$this->db->queryFetch(array($author->name, $author->id));
+		$this->db->queryFetch($query, array($author->name, $author->id));
 	}
 
 	public function deleteAuthor($auth_id)

@@ -11,113 +11,85 @@ class Model_Book{
 		$this->db = new DB();
 	}
 
-	private function addBookRelations($book_id, $authors, $genres)
-	{
-		
-			$data = array(); 
-			$sql = "INSERT INTO `books_authors` (`book_id`, `auth_id`)";
-			for ($i=0; $i < count($authors); $i++) {
-				$sql.="VALUES (?,?)";
-				$data.push($book_id)
-			}
-				
-			/*$stmt = $this->db->prepare($sql);
-			$stmt->execute(array('', $book_id, $authors[$i]));*/
-
-		for ($i=0; $i < count($genres); $i++) { 
-			$sql = "INSERT INTO `books_genres` (`id`, `book_id`, `genre_id`)
-				VALUES (?,?,?)";
-			$stmt = $this->db->prepare($sql);
-        	$stmt->execute(array('', $book_id, $genres[$i]));
-		}
-	}
-
-	private function deleteBookRelations($book_id)
-	{
-		$sql = "DELETE FROM `books_authors` 
-				WHERE `book_id` = ?";
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($book_id));
-
-        $sql = "DELETE FROM `books_genres` 
-				WHERE `book_id` = ?";
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($book_id));
-	}
-
-	public function getAllBooks($auth_id, $genre_id)
+	public function getAllBooks($auth_id=null, $genre_id=null)
 	{
 		$data = array();
 		$books = array();
-		$sql = "SELECT `books`.`id`,`books`.`name`, `books`.`descr`, `books`.`price` 
+		$query = "SELECT `books`.`id`,`books`.`name`, `books`.`descr`, `books`.`price` 
 				FROM `books`";
-		$sql_where = "WHERE 1 ";
+		$query_where = "WHERE 1 ";
 		
 		if (!empty($auth_id)) {
-			$sql .= ", `books_authors` as `b_a`";
-			$sql_where .= " AND `books`.`id` = `b_a`.`book_id`";
-			$sql_where .= " AND `b_a`.`auth_id` = ".$auth_id;
+			$query .= ", `books_authors` as `b_a`";
+			$query_where .= " AND `books`.`id` = `b_a`.`book_id`";
+			$query_where .= " AND `b_a`.`auth_id` = ?";//.$auth_id;
+			$data.push($auth_id);
 		}
 		if (!empty($genre_id)) {
-		 	$sql .= ", `books_genres` as `b_g`";
-		 	$sql_where .= " AND `books`.`id` = `b_g`.`book_id`";
-			$sql_where .= " AND `b_g`.`genre_id` = ".$genre_id;
+		 	$query .= ", `books_genres` as `b_g`";
+		 	$query_where .= " AND `books`.`id` = `b_g`.`book_id`";
+			$query_where .= " AND `b_g`.`genre_id` = ?";//.$genre_id;
+			$data.push($genre_id);
 		 } 
-		$sql .= $sql_where;
+		$query .= $query_where;
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+		$result = $this->db->queryFetchAll($query, $data);
         if ($result)
         {
-            return $result;
-        }
+			return $result;
+		}
 	}
 
 	public function getBookById($id)
 	{
-		$sql = "SELECT `id`,`name`, `descr`, `price` 
+		$query = "SELECT `id`,`name`, `descr`, `price` 
 				FROM `books`
 				WHERE `id`=?";
 
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($id));
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+		$res = $this->db->queryFetchAll($query, array($id));
+		$res = $res[0];
 
         if ($res) {
-        	return new Book($res['id'], $res['name'], $res['descr'], $res['price'], '', '');
+			return new Book($res['id'], $res['name'], $res['descr'], $res['price'], '', '');
         }
 	}
 
-	public function getNextBookId()
+	public function addNewBook()
 	{
-		$sql = "SHOW TABLE STATUS FROM ".DB_NAME." LIKE 'books'";
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
-        return intval($res['Auto_increment']);
-	}
+		$book = new Book(
+			null,
+			$_POST['book_title'],
+			$_POST['book_descr'],
+			$_POST['book_price'],
+			$_POST['book_authors'] ,
+			$_POST['book_genres']
+		);
 
-	public function addNewBook(Book $book)
-	{
-		$sql = "INSERT INTO `books` (`id`, `name`, `price`, `descr`)
-				VALUES (?,?,?,?)";
-
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array('', $book->name, $book->price, $book->descr));
+		$sql = "INSERT INTO `books` (`name`, `price`, `descr`)
+				VALUES (?,?,?)";
 
         $this->addBookRelations($book->id, $book->authors, $book->genres);
 	}
 
 	public function editBook(Book $book)
 	{
+		$book = new Book(
+			$book_id,
+			$_POST['book_title'],
+			$_POST['book_descr'],
+			$_POST['book_price'],
+			$_POST['book_authors'],
+			$_POST['book_genres']
+		);
+
 		$sql = "UPDATE `books`
 				SET `name` = ?, `descr` = ?, `price` = ?
 				WHERE `id` = ?";
 
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($book->name, $book->descr, $book->price, $book->id));
+		$this->db->queryFetch(
+			$query, 
+			array($book->name, $book->descr, $book->price, $book->id)
+		);
 
         $this->deleteBookRelations($book->id);
         $this->addBookRelations($book->id, $book->authors, $book->genres);
@@ -125,19 +97,41 @@ class Model_Book{
 
 	public function deleteBook($book_id)
 	{
-		$sql = "DELETE FROM `books` 
+		$query = "DELETE FROM `books` 
 				WHERE `id` = ?";
-		$stmt = $this->db->prepare($sql);
-        $stmt->execute(array($book_id));
+		$this->db->queryFetch($query, array($book_id));
         $this->deleteBookRelations($book_id);
 	}
 	
-	public function getBooksByAuthor($auth_id)
+	private function addBookRelations($book_id, $authors, $genres)
 	{
-		# code...
+		$data = array(); 
+		$query = "INSERT INTO `books_authors` (`book_id`, `auth_id`)";
+		for ($i=0; $i < count($authors); $i++) {
+			$query .= "VALUES (?,?)";
+			$data.push($book_id);
+			$data.push($authors[$i]);
+		}
+		$result = $this->db->queryFetch($query, $data);
+
+		$data = array(); 
+		$query = "INSERT INTO `books_genres` (`book_id`, `genre_id`)";
+		for ($i=0; $i < count($genres); $i++) {
+			$query .= "VALUES (?,?)";
+			$data.push($book_id);
+			$data.push($genres[$i]);
+		}
+		$result = $this->db->queryFetch($query, $data);
 	}
-	public function getBooksByGenre($genre_id)
+
+	private function deleteBookRelations($book_id)
 	{
-		# code...
+		$sql = "DELETE FROM `books_authors` 
+				WHERE `book_id` = ?";
+		$this->db->queryFetch(array($book_id));
+
+        $sql = "DELETE FROM `books_genres` 
+				WHERE `book_id` = ?";
+		$this->db->queryFetch(array($book_id));
 	}
 }

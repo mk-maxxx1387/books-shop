@@ -1,0 +1,8 @@
+RewriteEngine On
+
+RewriteBase /~user3/books-shop/server/api/
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^.*$ index.php 

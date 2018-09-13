@@ -1,12 +1,12 @@
 <?php
 
-class Book implements JsonSerializable{
-	private $id;
-	private $name;
-	private $descr;
-	private $price;
-	private $authors;
-	private $genres;
+class Book{
+	public $id;
+	public $name;
+	public $descr;
+	public $price;
+	public $authors;
+	public $genres;
 
 	function __construct($id, $name, $descr, $price, $authors, $genres)
 	{
@@ -27,11 +27,5 @@ class Book implements JsonSerializable{
 	{
 		$this->$name = $value;
 	}
-
-	public function jsonSerialize()
-	{
-		return get_object_vars($this);
-	}
-	
 }
 
