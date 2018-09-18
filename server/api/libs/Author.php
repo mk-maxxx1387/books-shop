@@ -1,6 +1,6 @@
 <?php
 
-class Author implements JsonSerializable{
+class Author {
 
 	public $id;
 	public $name;
@@ -19,10 +19,5 @@ class Author implements JsonSerializable{
 	public function __set($name, $value)
 	{
 		$this->$name = $value;
-	}
-
-	public function jsonSerialize()
-	{
-		return get_object_vars($this);
 	}
 }

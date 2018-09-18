@@ -11,26 +11,29 @@ class Model_Book{
 		$this->db = new DB();
 	}
 
-	public function getAllBooks($auth_id=null, $genre_id=null)
+	public function getAllBooks()
 	{
 		$data = array();
 		$books = array();
+		$params = Validate::getFilterParams();
+
 		$query = "SELECT `books`.`id`,`books`.`name`, `books`.`descr`, `books`.`price` 
 				FROM `books`";
-		$query_where = "WHERE 1 ";
+		$query_where = " WHERE 1 ";
 		
-		if (!empty($auth_id)) {
+		if ($params['authId']) {
 			$query .= ", `books_authors` as `b_a`";
 			$query_where .= " AND `books`.`id` = `b_a`.`book_id`";
-			$query_where .= " AND `b_a`.`auth_id` = ?";//.$auth_id;
-			$data.push($auth_id);
+			$query_where .= " AND `b_a`.`auth_id` = ?";
+			array_push($data, $params['authId']);
 		}
-		if (!empty($genre_id)) {
+		if ($params['genreId']) {
 		 	$query .= ", `books_genres` as `b_g`";
 		 	$query_where .= " AND `books`.`id` = `b_g`.`book_id`";
-			$query_where .= " AND `b_g`.`genre_id` = ?";//.$genre_id;
-			$data.push($genre_id);
-		 } 
+			$query_where .= " AND `b_g`.`genre_id` = ?";
+			array_push($data, $params['genreId']);
+		}
+
 		$query .= $query_where;
 
 		$result = $this->db->queryFetchAll($query, $data);
@@ -109,8 +112,8 @@ class Model_Book{
 		$query = "INSERT INTO `books_authors` (`book_id`, `auth_id`)";
 		for ($i=0; $i < count($authors); $i++) {
 			$query .= "VALUES (?,?)";
-			$data.push($book_id);
-			$data.push($authors[$i]);
+			array_push($data, $book_id);
+			array_push($data, $authors[$i]);
 		}
 		$result = $this->db->queryFetch($query, $data);
 
@@ -118,8 +121,8 @@ class Model_Book{
 		$query = "INSERT INTO `books_genres` (`book_id`, `genre_id`)";
 		for ($i=0; $i < count($genres); $i++) {
 			$query .= "VALUES (?,?)";
-			$data.push($book_id);
-			$data.push($genres[$i]);
+			array_push($data, $book_id);
+			array_push($data, $genres[$i]);
 		}
 		$result = $this->db->queryFetch($query, $data);
 	}

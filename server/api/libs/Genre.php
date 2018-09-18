@@ -3,8 +3,7 @@
 /**
 * 
 */
-class Genre implements JsonSerializable
-{
+class Genre {
 	
 	public $id;
 	public $name;

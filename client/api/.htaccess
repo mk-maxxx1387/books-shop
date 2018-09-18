@@ -1,0 +1,7 @@
+<Limit PUT DELETE>
+    Allow from all
+</Limit>
+
+RewriteEngine On 
+RewriteBase /api/
+RewriteRule (.*) http://192.168.0.15/~user3/books-shop/server/api/$1 [P]

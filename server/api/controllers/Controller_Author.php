@@ -15,7 +15,13 @@ class Controller_Author
         } else {
             $result = $this->model->getAllAuth();
         }
-        return array("code" => 200, "data" => $result);
+        
+        if($result){
+            return array("code" => 200, "data" => $result);
+        } else {
+            return array("code" => 400, "data" => "Empty result");
+        }
+        
     }
     public function postAuthor(){}
     public function putAuthor(){}

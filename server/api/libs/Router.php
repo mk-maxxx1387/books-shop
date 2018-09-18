@@ -18,7 +18,8 @@ class Router
 		$func = strtolower($method).ucfirst($class);
 		$controller = "Controller_".ucfirst($class);
 		$params = explode('.', $param);
-
+		$params[0] = explode('?', $params[0])[0];
+		
 		self::setMethod($controller, $func, $params[0], $params[1]);
 	}
 
@@ -32,17 +33,6 @@ class Router
 			new View($res['code'], $res['data'], $printType);
 		} else {
 			new View(404, "Page not found");
-			//self::ErrorPage404();
 		}
 	}
-
-	static function ErrorPage404()
-	{
-        $host = 'http://'.$_SERVER['HTTP_HOST'].'/';
-        header('HTTP/1.1 404 Not Found');
-		header("Status: 404 Not Found");
-		header('Location:'.$host.'404');
-    }
-
-
 }

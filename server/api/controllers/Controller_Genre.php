@@ -15,7 +15,12 @@ class Controller_Genre
         } else {
             $result = $this->model->getAllGenres();
         }
-        return array("code" => 200, "data" => $result);
+        
+        if($result){
+            return array("code" => 200, "data" => $result);
+        } else {
+            return array("code" => 400, "data" => "Empty result");
+        }
     }
     public function postGenre(){}
     public function putGenre(){}

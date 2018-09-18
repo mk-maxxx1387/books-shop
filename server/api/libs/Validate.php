@@ -17,7 +17,23 @@ class Validate{
         } else {
             return self::$error;
         }
+    }
 
+    public function getFilterParams()
+    {
+        if($_GET['filter_auth']){
+            $filter_auth = intval($_GET['filter_auth']);
+        } else{
+            $filter_auth = null;
+        }
+        if($_GET['filter_genre']){
+            $filter_genre = intval($_GET['filter_genre']);
+        } else{
+            $filter_genre = null;
+        }
+        
+        
+        return array('authId' => $filter_auth, 'genreId' => $filter_genre);
     }
 
     public function validateRegister()

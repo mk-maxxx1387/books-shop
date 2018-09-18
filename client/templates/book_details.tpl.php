@@ -32,9 +32,9 @@
 <a href="/"><input type='button' value='Go back to catalog'></a>
 
 
-<div id="order-modal"><!-- Сaмo oкнo --> 
+<div id="order-modal">
 	<h2>Order book via email</h2>
-    <span id="order-modal-close">X</span> <!-- Кнoпкa зaкрыть --> 
+    <span id="order-modal-close">X</span>
     <form id='order-form' action='' method='post' onsubmit="return false">
 		<table>
 		<tr>
@@ -63,4 +63,4 @@
 	<input type='hidden' name='book-id' id='book-id' value='<?=$book->id;?>'>
 </form>
 </div>
-<div id="overlay"></div><!-- Пoдлoжкa -->
+<div id="overlay"></div>

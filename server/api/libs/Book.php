@@ -1,6 +1,6 @@
 <?php
 
-class Book{
+class Book {
 	public $id;
 	public $name;
 	public $descr;

@@ -23,24 +23,22 @@ class View
     }
     public function printJson($code, $data)
     {
-        var_dump($data);
-        foreach ($data as $obj) {
-            if(is_object($obj)){
-                foreach ($obj as $key) {
-                    if(is_array($key)){
-                        json_encode($key);
+        if(!is_string($data)){
+            foreach ($data as $obj) {
+                if(is_object($obj)){
+                    foreach ($obj as $key) {
+                        if(is_array($key)){
+                            json_encode($key);
+                        }
                     }
                 }
-            }
-            if(is_array($key)){
-                json_encode($key);
+                if(is_array($key)){
+                    json_encode($key);
+                }
             }
         }
         
         http_response_code($code);
-        if($code == 404){
-            echo "<h2>Ooops, Not found (404)</h2>";
-        }
         echo json_encode($data);
     }
 
